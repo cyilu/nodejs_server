@@ -120,7 +120,7 @@ async function qStudentByConditions(con){
 
 async function qCourse(condi){
     ans = [];
-    str = "select  * from course where teacher_id = '"+condi.ref+"' " ;
+    str = "select  * from course where teacher_id = "+condi.ref+" " ;
     console.log(str)
     await new Promise(resolve => {
         sql.query(str, async function(err, rows, fields) {
@@ -129,12 +129,43 @@ async function qCourse(condi){
             resolve();
         });
     })
-    //sql.end();
+    console.log(ans);
+    return ans;
+}
+
+async function qCalltheRoll(condi){
+    ans = [];
+    str = "select  * from calltheroll where courseid in ( select id from course where teacher_id = "+condi.ref+" )" ;
+    console.log(str)
+    await new Promise(resolve => {
+        sql.query(str, async function(err, rows, fields) {
+            if (err) throw err;
+            ans = rows;
+            resolve();
+        });
+    })
+    console.log(ans);
+    return ans;
+}
+
+async function qCalltheRollStudent(condi){
+    ans = [];
+    str = "select  * from calltheroll, calltherollstudent, ddstate where calltherollstudent.studentid = "+condi.ref+" and calltheroll.autoid = calltherollstudent.rollid and ddstate.callstate = calltherollstudent.callstate " ;
+    console.log(str)
+    await new Promise(resolve => {
+        sql.query(str, async function(err, rows, fields) {
+            if (err) throw err;
+            ans = rows;
+            resolve();
+        });
+    })
     console.log(ans);
     return ans;
 }
 
 module.exports.qStudent = qStudent;
+module.exports.qCalltheRollStudent = qCalltheRollStudent;
+module.exports.qCalltheRoll = qCalltheRoll;
 module.exports.qCourse = qCourse;
 module.exports.qManager = qManager;
 module.exports.addManager = addManager;

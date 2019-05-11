@@ -91,4 +91,28 @@ router.post('/qCourse', async function(req, res, next) {
   res.json({data: ans, message: 200});
 });
 
+router.post('/qCalltheRoll', async function(req, res, next) {
+  ans = [];
+  condi = {
+    ref:req.param('ref')
+  } 
+  console.log(condi);
+  await sql.qCalltheRoll(condi).then(v => {
+    ans = v;
+  });
+  res.json({data: ans, message: 200});
+});
+
+router.post('/qCalltheRollStudent', async function(req, res, next) {
+  ans = [];
+  condi = {
+    ref:req.param('ref')
+  } 
+  console.log(condi);
+  await sql.qCalltheRollStudent(condi).then(v => {
+    ans = v;
+  });
+  res.json({data: ans, message: 200});
+});
+
 module.exports = router;
