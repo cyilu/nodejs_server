@@ -37,6 +37,19 @@ async function qManager(){
     return ans;
 }
 
+async function qManagerByName(name){
+    ans = [];
+    await new Promise(resolve => {
+        sql.query('select  * from manager where name like "%'+name+'%"', async function(err, rows, fields) {
+            if (err) throw err;
+            ans = rows;
+            resolve();
+        });
+    })
+    console.log(ans);
+    return ans;
+}
+
 async function addManager(mana){
     success = 0;
     await new Promise(resolve => {
@@ -54,7 +67,11 @@ async function addManager(mana){
 }
 
 async function loginManager(mana){
-    success = 0;
+    res = {
+        success:0,
+        role:0,
+        ref:0
+    }
     qstr = "SELECT * FROM login where account = '"+mana[0]+"' AND password = '"+mana[1]+"' ";
     console.log(qstr);
     await new Promise(resolve => {
@@ -64,16 +81,63 @@ async function loginManager(mana){
                 throw err;
             }
             console.log(rows.length)
-            if(rows.length>0)
-                success = 1;
+            if(rows.length>0){
+                res.role = rows[0].role;
+                res.success = 1;
+                res.ref = rows[0].ref;
+            }
             resolve();
         });
     })
-    console.log(success);
-    return success;
+    console.log(res);
+    return res;
+}
+
+async function qStudentByConditions(con){
+    ans = [];
+    str = "select  * from student where 1=1 ";
+    if(con.name != ''){
+        str += "and name like '%" + con.name +"%' "
+    }
+    if(con.sno != ''){
+        str += "and sno like '%" + con.sno +"%' "
+    }
+    if(con.specialty != ''){
+        str += "and specialty like '%" + con.specialty + "%' "
+    }
+    console.log(str)
+    await new Promise(resolve => {
+        sql.query(str, async function(err, rows, fields) {
+            if (err) throw err;
+            ans = rows;
+            resolve();
+        });
+    })
+    //sql.end();
+    console.log(ans);
+    return ans;
+}
+
+async function qCourse(condi){
+    ans = [];
+    str = "select  * from course where teacher_id = '"+condi.ref+"' " ;
+    console.log(str)
+    await new Promise(resolve => {
+        sql.query(str, async function(err, rows, fields) {
+            if (err) throw err;
+            ans = rows;
+            resolve();
+        });
+    })
+    //sql.end();
+    console.log(ans);
+    return ans;
 }
 
 module.exports.qStudent = qStudent;
+module.exports.qCourse = qCourse;
 module.exports.qManager = qManager;
 module.exports.addManager = addManager;
 module.exports.loginManager = loginManager;
+module.exports.qManagerByName = qManagerByName;
+module.exports.qStudentByConditions = qStudentByConditions;

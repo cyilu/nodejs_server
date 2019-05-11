@@ -11,7 +11,6 @@ var app = express();
 //app.use(cors({credentials: true, origin: true}))
 //设置跨域访问
 app.all('*', function(req, res, next) {
-  console.log("appapppappappapp")
   //res.header("Access-Control-Allow-Credentials", "true");
   //res.header("Access-Control-Allow-Origin", "*");
   // res.header("Access-Control-Allow-Credentials", true);// 接受携带Cookie的请求
